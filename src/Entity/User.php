@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Component\User\FullNameDto;
 use App\Controller\UserCreateAction;
+use App\Controller\UserFullNameAction;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -15,8 +17,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'get',
         'createUser' => [
             'method' => 'post',
-            'path' => '/user/my',
+            'path' => '/users/my',
             'controller' => UserCreateAction::class
+        ],
+        'fullName' => [
+            'method' => 'post',
+            'path' => '/users/full-name',
+            'input' => FullNameDto::class,
+            'controller' => UserFullNameAction::class
         ]
     ],
     itemOperations: ['get', 'delete'],

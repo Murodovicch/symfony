@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Component\User\FindCategoryDto;
+use App\Controller\FindCategoryAction;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,23 +13,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
-    denormalizationContext: ['groups' => ['category:write']],
-    normalizationContext: ['groups' => ['category:read']]
+    collectionOperations: [
+        'get',
+        'findCategory' => [
+            'method' => 'post',
+            'path' => '/categories/find',
+            'input' => FindCategoryDto::class,
+            'controller' => FindCategoryAction::class
+        ]
+    ]
 )]
 class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['category:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['category:read', 'category:write'])]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Book::class)]
-    #[Groups(['category:read'])]
     private $books;
 
     public function __construct()
