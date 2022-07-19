@@ -17,15 +17,15 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['book:read'])]
+    #[Groups(['book:read', 'category:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['book:read', 'book:write'])]
+    #[Groups(['book:read', 'book:write', 'category:read'])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['book:read', 'book:write'])]
+    #[Groups(['book:read', 'book:write', 'category:read'])]
     private $description;
 
     #[ORM\Column(type: 'text')]

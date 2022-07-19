@@ -21,19 +21,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'input' => FindCategoryDto::class,
             'controller' => FindCategoryAction::class
         ]
-    ]
+    ],
+    denormalizationContext: ['groups' => ['category:write']],
+    normalizationContext: ['groups' => ['category:read']]
 )]
 class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['category:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['category:read', 'category:write'])]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Book::class)]
+    #[Groups(['category:read'])]
     private $books;
 
     public function __construct()
