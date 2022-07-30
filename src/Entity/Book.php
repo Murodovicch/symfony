@@ -2,39 +2,41 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource(
-    denormalizationContext: ['groups' => ['book:write']],
-    normalizationContext: ['groups' => ['book:read']]
-)]
+#[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
+    'name' => 'partial',
+    'category' => 'exact'
+])]
+#[ApiFilter(OrderFilter::class, properties: [
+    'id', 'name'
+])]
 class Book
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['book:read', 'category:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['book:read', 'book:write', 'category:read'])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['book:read', 'book:write', 'category:read'])]
     private $description;
 
     #[ORM\Column(type: 'text')]
-    #[Groups(['book:read', 'book:write'])]
     private $text;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['book:read', 'book:write'])]
     private $category;
 
     public function getId(): ?int
