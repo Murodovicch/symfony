@@ -63,4 +63,17 @@ class UserRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findMaxAge(): int
+    {
+        $result = $this->createQueryBuilder('u')
+            ->select('(max(u.age))')
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($result === null) {
+            return 0;
+        }
+
+        return (int)$result;
+    }
 }

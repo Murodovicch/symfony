@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Component\User\FullNameDto;
 use App\Controller\UserCreateAction;
 use App\Controller\UserFullNameAction;
+use App\Controller\UserGetMaxAgeAction;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'get',
         'createUser' => [
             'method' => 'post',
-            'path' => '/users/my',
+            'path' => '/users',
             'controller' => UserCreateAction::class
         ],
         'fullName' => [
@@ -29,7 +30,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
         'auth' => [
             'method' => 'post',
-            'path' => '/users/auth'
+            'path' => '/users/auth',
+            'denormalization_context' => ['groups' => ['user:auth']]
+        ],
+        'maxAge' => [
+            'method' => 'get',
+            'path' => '/users/max-age',
+            'controller' => UserGetMaxAgeAction::class
         ]
     ],
     itemOperations: ['get', 'delete'],
@@ -45,12 +52,16 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:auth'])]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user:auth'])]
     private $password;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
+    private $age;
 
     public function getId(): ?int
     {
@@ -99,5 +110,17 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getUsername(): string
     {
         return $this->getEmail();
+    }
+
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+
+    public function setAge(?int $age): self
+    {
+        $this->age = $age;
+
+        return $this;
     }
 }

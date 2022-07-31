@@ -17,7 +17,7 @@ class UserCreateAction extends AbstractController
 
     public function __invoke(User $data): User
     {
-        $user = $this->userFactory->create($data->getEmail(), $data->getPassword());
+        $user = $this->userFactory->create($data->getEmail(), $data->getPassword(), $data->getAge());
         $this->userManager->save($user, true);
 
         return $user;
