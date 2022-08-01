@@ -8,9 +8,13 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['book:write']],
+    normalizationContext: ['groups' => ['book:read']]
+)]
 #[ApiFilter(SearchFilter::class, properties: [
     'id' => 'exact',
     'name' => 'partial',
@@ -24,20 +28,29 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['book:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['book:write', 'book:read'])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['book:write', 'book:read'])]
     private $description;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['book:write', 'book:read'])]
     private $text;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['book:write', 'book:read'])]
     private $category;
+
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[Groups(['book:write', 'book:read'])]
+    private $picture;
 
     public function getId(): ?int
     {
@@ -88,6 +101,18 @@ class Book
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getPicture(): ?MediaObject
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?MediaObject $picture): self
+    {
+        $this->picture = $picture;
 
         return $this;
     }

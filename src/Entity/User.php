@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Component\User\FullNameDto;
 use App\Controller\UserCreateAction;
 use App\Controller\UserFullNameAction;
+use App\Controller\UserGetAdultsAction;
 use App\Controller\UserGetMaxAgeAction;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,6 +38,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'get',
             'path' => '/users/max-age',
             'controller' => UserGetMaxAgeAction::class
+        ],
+        'adults' => [
+            'method' => 'get',
+            'path' => '/users/adults',
+            'controller' => UserGetAdultsAction::class
         ]
     ],
     itemOperations: ['get', 'delete'],

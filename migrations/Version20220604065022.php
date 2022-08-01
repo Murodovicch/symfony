@@ -14,7 +14,7 @@ final class Version20220604065022 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'add category_id to Book table';
+        return 'created category_id to Book table';
     }
 
     public function up(Schema $schema): void
