@@ -44,16 +44,17 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ],
     ],
     iri: 'https://schema.org/MediaObject',
-    itemOperations: ['get'],
+    itemOperations: ['get', 'delete'],
     normalizationContext: ['groups' => ['media_object:read']]
 )]
 class MediaObject
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
+    #[Groups(['media_object:read'])]
     private ?int $id = null;
 
     #[ApiProperty(iri: 'https://schema.org/contentUrl')]
-    #[Groups(['media_object:read'])]
+    #[Groups(['media_object:read', 'book:read'])]
     public ?string $contentUrl = null;
 
     /**
